@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    
+  .page-title {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    
+    .section-title, h2, p, p1 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.5em;
+      text-align: center;
+    }
+    h1 {
+      display: block;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.5em;
+      text-align: center;
+      background-color: #0077cc;
+      padding:10px;
+      border-radius: 30px;
+      color: white;
+    }
+    .btn{
+      background-color: #0077cc;
+      color: #fff;
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      border-radius: 15px;
+      margin-top: 10px;
+    }
+    .btn1{
+      background-color: #0077cc;
+      color: #fff;
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      margin: auto;
+      display: block;
+      margin-bottom: 50px;
+      border-radius: 15px;
+      margin-top: 50px;
+    }
+    .btn2{
+      background-color: red;
+      color: #fff;
+      display: inline-block;
+      padding: 0.2em 0.3em;
+      text-decoration: none;
+      border-radius: 15px;
+    }
+    
+    .btn:hover, .btn1:hover{
+      background-color: #333;
+    }
+    
+    .connection-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    
+    .connection-list li {
+      margin-bottom: 0.5em;
+    }
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin: 0 auto;
+      border-radius: 10px;
+      }
+
+  th, td {
+      text-align: left;
+      padding: 8px;
+      text-align: center;
+      border-radius: 10px;
+  }
+
+  th {
+      background-color: #0077cc;
+      color: white;
+  }
+
+  tr:nth-child(even) {
+      background-color: #f2f2f2
+  }
+  .page-action {
+      margin: 1em;
+      text-align: center;
+  }
+  select {
+      width: 300px; /* change this value to adjust the width */
+      padding: 5px;
+      font-size: 25px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 180px;
+    }
+    .input-padding {
+      padding: 10px;
+  }
+</style>
+<script src="https://kit.fontawesome.com/eaec4917e4.js" crossorigin="anonymous"></script>
+  <h1><i class="fa-solid fa-network-wired"></i>  Желі қосу</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Сақтау" class="btn1">
+  </form>
+{% endblock %}

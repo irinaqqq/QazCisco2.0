@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-top: 2rem;
+      }
+      
+      .my-link-class{
+        display: block;
+        padding: 1rem;
+        margin: 1rem auto;
+        width: 60%;
+        background-color: #0077cc;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+      
+      a:hover {
+        background-color: #005fa3;
+        transform: translateY(-3px);
+      }
+      
+      p {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+      }
+      
+</style>
+<script src="https://kit.fontawesome.com/eaec4917e4.js" crossorigin="anonymous"></script>
+    <h1>Құрылғылар</h1>
+    <ul>
+        {% for device in devices %}
+            <a href="{% url 'device_detail' device.pk %}" class="my-link-class"> 
+            {% if device.device_type == 'pc' %}
+                <i class="fas fa-desktop"></i>
+            {% elif device.device_type == 'router' %}
+                <i class="fas fa-wifi"></i>
+            {% elif device.device_type == 'switch' %}
+                <i class="fas fa-exchange-alt"></i>
+            {% endif %}
+                {{ device.name }}</a>
+        {% empty %}
+        No devices found.
+        {% endfor %}
+    </ul>
+{% endblock %}

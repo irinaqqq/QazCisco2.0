@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    
+    .page-title {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 1em;
+        text-align: center;
+      }
+      
+      .section-title, h2, p, p1 {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0.5em;
+        text-align: center;
+      }
+      p1 {
+        display: block;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0.5em;
+        text-align: center;
+        background-color: #4CAF50;
+        width: max-content;
+        margin-left: 26%;
+        padding:10px;
+        border-radius: 30px;
+      }
+      .btn{
+        background-color: #0077cc;
+        color: #fff;
+        display: inline-block;
+        padding: 0.5em 1em;
+        text-decoration: none;
+        border-radius: 15px;
+      }
+      .btn1{
+        background-color: #0077cc;
+        color: #fff;
+        display: inline-block;
+        padding: 0.5em 1em;
+        text-decoration: none;
+        margin: auto;
+        display: block;
+        margin-bottom: 50px;
+        border-radius: 15px;
+      }
+      .btn2{
+        background-color: red;
+        color: #fff;
+        display: inline-block;
+        padding: 0.2em 0.3em;
+        text-decoration: none;
+        border-radius: 15px;
+      }
+      
+      .btn:hover, .btn1:hover{
+        background-color: #333;
+      }
+      
+      .connection-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      
+      .connection-list li {
+        margin-bottom: 0.5em;
+      }
+      table {
+        border-collapse: collapse;
+        width: 50%;
+        margin: 0 auto;
+        border-radius: 10px;
+        }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    th {
+        background-color: #0077cc;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+    .page-action {
+        margin: 1em;
+        text-align: center;
+    }
+    select {
+        width: 200px; /* change this value to adjust the width */
+        padding: 5px;
+        font-size: 25px;
+      }
+      .device-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+      
+      .device-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .device-icon {
+        margin-bottom: 10px;
+      }
+      
+      .device-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      
+      .device-ip {
+        font-size: 0.8em;
+        color: #666;
+        margin-bottom: 10px;
+      }
+      
+      .device-actions {
+        margin-top: auto;
+      }
+      .device-grid {
+        position: relative;
+      }
+      
+      #connection-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+      .device-name, device-name{
+        background-color: #adadad;
+        border-radius: 5px;
+      }
+      .checkmark{
+        color: green;
+      }
+
+      
+</style>
+<script src="https://kit.fontawesome.com/eaec4917e4.js" crossorigin="anonymous"></script>
+{% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
+    <h1 class="page-title"><i class="fa-solid fa-network-wired"></i> {{ network.name }}</h1>
+    {% if messages %}
+    {% for message in messages %}
+        <p1>{{ message }}</p1>
+    {% endfor %}
+{% endif %}
+    {% if devices %}
+        <h2>Құрылғылар</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Аты</th>
+                    <th>Түрі</th>
+                    <th>IP мекенжайы</th>
+                    <th>Жою</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for device in devices %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>
+                        {% if device.device_type == 'pc' %}
+                            <i class="fas fa-desktop"></i>
+                        {% elif device.device_type == 'router' %}
+                            <i class="fas fa-wifi"></i>
+                        {% elif device.device_type == 'switch' %}
+                            <i class="fas fa-exchange-alt"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ device.ip_address }}</td>
+                    <td>
+                        <a href="{% url 'device_delete' pk=device.pk pk2=device.pk %}" class="btn2 btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this device?');">
+                            <i class="fas fa-trash"></i> Жою
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Бұл желіде бірде-бір құрылғы табылған жоқ.</p>
+    {% endif %}
+    <div class="page-action">
+        <a href="{% url 'connection_create' pk=network.pk %}" class="btn">Байланыс жасау</a>
+    </div>
+
+    <h2 class="section-title">Байланыстар</h2>
+    {% if connections %}
+    <table class="connection-table">
+        <thead>
+            <tr>
+                <th>Құрылғы 1</th>
+                <th>Түрі</th>
+                <th>Интерфейс 1</th>
+                <th>Құрылғы 2</th>
+                <th>Түрі</th>
+                <th>Интерфейс 2</th>
+                <th>Жою</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for connection in connections %}
+            <tr>
+                <td>{{ connection.device1.name }}</td>
+                <td>
+                    {% if connection.device1.device_type == 'pc' %}
+                        <i class="fas fa-desktop"></i>
+                    {% elif connection.device1.device_type == 'router' %}
+                        <i class="fas fa-wifi"></i>
+                    {% elif connection.device1.device_type == 'switch' %}
+                        <i class="fas fa-exchange-alt"></i>
+                    {% endif %}
+                </td>
+                <td>{{ connection.interface1.name }} ({{ connection.interface1.ip_address }})</td>
+                <td>{{ connection.device2.name }}</td>
+                <td>
+                    {% if connection.device2.device_type == 'pc' %}
+                        <i class="fas fa-desktop"></i>
+                    {% elif connection.device2.device_type == 'router' %}
+                        <i class="fas fa-wifi"></i>
+                    {% elif connection.device2.device_type == 'switch' %}
+                        <i class="fas fa-exchange-alt"></i>
+                    {% endif %}
+                </td>
+                <td>{{ connection.interface2.name }} ({{ connection.interface2.ip_address }})</td>
+                <td>
+                    <form method="post" action="{% url 'connection_delete' pk=network.pk id=connection.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">Байланыс жоқ</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Бұл желіде ешқандай байланыс табылған жоқ.</p>
+{% endif %}
+
+
+    <h2>Ping:</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ ping_form.as_p }}
+      <button type="submit" class="btn1">Ping</button>
+    </form>
+
+    
+    <div class="device-grid">
+        <canvas id="connection-canvas" height="500%" width="2000%"></canvas>
+        {% for device in devices %}
+          <div class="device-item" data-device-id="{{ device.id }}">
+            <div class="device-icon">
+              {% if device.device_type == 'pc' %}
+                <img src="{% static 'images/pc.png' %}" alt="PC" width="50" height="50">
+              {% elif device.device_type == 'router' %}
+                <img src="{% static 'images/router.png' %}" alt="Router" width="50" height="50">
+              {% elif device.device_type == 'switch' %}
+                <img src="{% static 'images/switch.png' %}" alt="Switch" width="50" height="50">
+              {% endif %}
+            </div>
+            <div class="device-name">{{ device.name }} {{ device.id }}
+                {% if device.is_connected %}
+                <span class="checkmark">&#10004;</span>
+                 {% else %}
+                <span class="cross">&#10060;</span>
+                {% endif %}
+              </div>
+            <div class="device-ip">{{ device.ip_address }}</div>
+          </div>
+        {% endfor %}
+        
+    </div>
+    
+    <script>
+        const canvas = document.getElementById("connection-canvas");
+        const context = canvas.getContext("2d");
+        const canvasRect = canvas.getBoundingClientRect();
+        {% comment %} context.strokeStyle = 'red'; {% endcomment %}
+        context.lineWidth = 5;
+          {% for connection in connections %}
+          const device1Element{{ forloop.counter }} = document.querySelector(`[data-device-id='{{ connection.device1.id }}']`);
+          const device2Element{{ forloop.counter }} = document.querySelector(`[data-device-id='{{ connection.device2.id }}']`);
+          const device1Rect{{ forloop.counter }} = device1Element{{ forloop.counter }}.getBoundingClientRect();
+          const device2Rect{{ forloop.counter }} = device2Element{{ forloop.counter }}.getBoundingClientRect();
+          
+          const device1X{{ forloop.counter }} = device1Rect{{ forloop.counter }}.left - canvasRect.left + device1Rect{{ forloop.counter }}.width / 2;
+          const device1Y{{ forloop.counter }} = device1Rect{{ forloop.counter }}.top - canvasRect.top + device1Rect{{ forloop.counter }}.height / 2;
+          const device2X{{ forloop.counter }} = device2Rect{{ forloop.counter }}.left - canvasRect.left + device2Rect{{ forloop.counter }}.width / 2;
+          const device2Y{{ forloop.counter }} = device2Rect{{ forloop.counter }}.top - canvasRect.top + device2Rect{{ forloop.counter }}.height / 2;
+          context.beginPath();
+          console.log(device1X{{ forloop.counter }}, device1Y{{ forloop.counter }})
+          context.moveTo(device1X{{ forloop.counter }}, device1Y{{ forloop.counter }} - 25);
+          console.log(device2X{{ forloop.counter }}, device2Y{{ forloop.counter }})
+          context.lineTo(device2X{{ forloop.counter }}, device2Y{{ forloop.counter }} - 25);
+          context.stroke();
+        {% endfor %}
+        
+      </script>
+      
+      
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    
+  .page-title {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    
+    .section-title, h2, p, p1 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.5em;
+      text-align: center;
+    }
+    h1 {
+      display: block;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.5em;
+      text-align: center;
+      background-color: #0077cc;
+      padding:10px;
+      border-radius: 30px;
+      color: white;
+    }
+    .btn{
+      background-color: #0077cc;
+      color: #fff;
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      border-radius: 15px;
+      margin-top: 10px;
+    }
+    .btn1{
+      background-color: #0077cc;
+      color: #fff;
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      margin: auto;
+      display: block;
+      margin-bottom: 50px;
+      border-radius: 15px;
+      margin-top: 50px;
+    }
+    .btn2{
+      background-color: red;
+      color: #fff;
+      display: inline-block;
+      padding: 0.2em 0.3em;
+      text-decoration: none;
+      border-radius: 15px;
+    }
+    
+    .btn:hover, .btn1:hover{
+      background-color: #333;
+    }
+    
+    .connection-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    
+    .connection-list li {
+      margin-bottom: 0.5em;
+    }
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin: 0 auto;
+      border-radius: 10px;
+      }
+
+  th, td {
+      text-align: left;
+      padding: 8px;
+      text-align: center;
+      border-radius: 10px;
+  }
+
+  th {
+      background-color: #0077cc;
+      color: white;
+  }
+
+  tr:nth-child(even) {
+      background-color: #f2f2f2
+  }
+  .page-action {
+      margin: 1em;
+      text-align: center;
+  }
+  select {
+      width: 200px; /* change this value to adjust the width */
+      padding: 5px;
+      font-size: 25px;
+    }
+  
+</style>
+<script src="https://kit.fontawesome.com/eaec4917e4.js" crossorigin="anonymous"></script>
+    <h1>            {% if device.device_type == 'pc' %}
+      <i class="fas fa-desktop"></i>
+  {% elif device.device_type == 'router' %}
+      <i class="fas fa-wifi"></i>
+  {% elif device.device_type == 'switch' %}
+      <i class="fas fa-exchange-alt"></i>
+  {% endif %} {{ device.name }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ interface_form.as_p }}
+            <button type="submit" class="btn1">Интерфейсті қосу</button>
+        </form>
+        {% if device.interface_set.all %}
+        <h2>Интерфейстер:</h2>
+        <ul>
+          <table>
+            <thead>
+              <tr>
+                <th>Аты</th>
+                <th>IP мекенжайы</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for interface in device.interface_set.all %}
+              <tr>
+                <td>{{ interface.name }}</td>
+                <td>{{ interface.ip_address }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          
+        </ul>
+        {% else %}
+        <p>Интерфейстер табылмады.</p>
+        {% endif %}
+        <h2>Байланыстар:</h2>
+        <ul>
+          <table>
+            <thead>
+              <tr>
+                <th>Құрылғы 1</th>
+                <th>Интерфейс 1</th>
+                <th>IP мекенжайы 1</th>
+                <th>Құрылғы 2</th>
+                <th>Интерфейс 2</th>
+                <th>IP мекенжайы 2</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for connection in connections %}
+              <tr>
+                <td>{{ connection.device1.name }}</td>
+                <td>{{ connection.interface1.name }}</td>
+                <td>{{ connection.interface1.ip_address }}</td>
+                <td>{{ connection.device2.name }}</td>
+                <td>{{ connection.interface2.name }}</td>
+                <td>{{ connection.interface2.ip_address }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          
+        </ul>
+{% endblock %}
